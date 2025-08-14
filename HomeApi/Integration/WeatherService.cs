@@ -14,9 +14,15 @@ public class WeatherService(IWeatherClient weatherApi, IOptions<ApiConfiguration
 {
     private readonly ApiConfiguration _apiConfig = options.Value;
 
-    public Task<WeatherData> GetWeatherAsync(string lat, string lon)
+    public Task<WeatherData> GetWeatherAsync(string? lat, string? lon)
     {
         var location = $"{lat},{lon}";
+        
+        if (string.IsNullOrEmpty(lat) || string.IsNullOrEmpty(lon))
+        {
+            location = _apiConfig.DefaultCity;
+        }
+        
         return weatherApi.GetForecastAsync(_apiConfig.Keys.Weather, location);
     }
 }

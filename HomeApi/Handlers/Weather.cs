@@ -35,16 +35,27 @@ public static class Weather
 
         public async Task<WeatherInformation> Handle(Command request, CancellationToken cancellationToken)
         {
-            var coordinates = await _geocodingService.GetCoordinatesAsync(_apiConfiguration.DefaultCity);
-            if (coordinates is null)
-                throw new Exception("Coordinates not found");
+            var coordinates = await _geocodingService.TryCallAsync(service =>
+                service.GetCoordinatesAsync(_apiConfiguration.DefaultCity),
+                _logger, 
+                "Failed to get coordinates"
+            );
+            
+            var aurora = await _auroraService.TryCallAsync(service => 
+                service.GetAuroraForecastAsync(coordinates?.Lat ?? "0.00", coordinates?.Lon ?? "0.00"), 
+                _logger, 
+                "Failed to get aurora forecast"
+            );
+            
+            var weather = await _weatherService.TryCallAsync(service => 
+                service.GetWeatherAsync(coordinates?.Lat ?? string.Empty, coordinates?.Lon ?? string.Empty), 
+                _logger, 
+                "Failed to get weather data"
+            );
 
-            var aurora = await _auroraService.GetAuroraForecastAsync(coordinates.Lat, coordinates.Lon);
-            var weather = await _weatherService.GetWeatherAsync(coordinates.Lat, coordinates.Lon);
+            var forecasts = weather?.Forecast.Forecastday.Select(day => day.ToForecast()).ToList();
 
-            var forecasts = weather.Forecast.Forecastday.Select(day => day.ToForecast()).ToList();
-
-            return weather.ToContract(coordinates.Name, aurora, forecasts);
+            return weather?.ToContract(coordinates?.Name, aurora, forecasts) ?? new WeatherInformation();
         }
     }
 }
