@@ -494,7 +494,9 @@
         </div>
 
         <div class="current-temp">
-            <div class="temp-main">@Model.Weather?.Current.Temperature°C</div>
+            <div class="temp-main">
+                @(Model.Weather?.Current.Temperature != null ? $"{Model.Weather.Current.Temperature}°C" : "N/A")
+            </div>
             <div class="feels-like">Feels like @Model.Weather?.Current.Feelslike°C</div>
         </div>
 
