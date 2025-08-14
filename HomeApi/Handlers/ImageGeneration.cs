@@ -1,5 +1,6 @@
 using System.Dynamic;
 using System.Reflection;
+using HomeApi.Extensions;
 using HomeApi.Models.Configuration;
 using MediatR;
 using Microsoft.Extensions.Options;
@@ -22,8 +23,8 @@ public static class ImageGeneration
 
         public async Task<Stream> Handle(Command request, CancellationToken cancellationToken)
         {
-            var weather = await mediator.Send(new Weather.Command(), cancellationToken);
-            var departureBoard = await mediator.Send(new DepartureBoard.Command(), cancellationToken);
+            var weather = await mediator.TrySendAsync(new Weather.Command(), cancellationToken);
+            var departureBoard = await mediator.TrySendAsync(new DepartureBoard.Command(), cancellationToken);
             
             var model = new Models.Image
             {
@@ -31,8 +32,6 @@ public static class ImageGeneration
                 TimeTable = departureBoard
             };
             
-            if(weather is null)
-                throw new Exception("Weather data not found");
             
             var engine = new RazorLightEngineBuilder()
                 .SetOperatingAssembly(Assembly.GetExecutingAssembly())
@@ -59,7 +58,7 @@ public static class ImageGeneration
         {
             var browserFetcher = new BrowserFetcher();
             await browserFetcher.DownloadAsync();
-            var browser = await Puppeteer.LaunchAsync(new LaunchOptions
+            await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
                 Headless = true,
                 Args = ["--disable-gpu"]

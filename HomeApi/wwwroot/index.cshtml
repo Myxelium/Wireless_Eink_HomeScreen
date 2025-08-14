@@ -43,8 +43,11 @@
         return "fa-question-circle";
     }
     
-    private string GetAirQualityStatus(AirQuality data)
+    private string GetAirQualityStatus(AirQuality? data)
     {
+        if(data == null)
+            return "No Data";
+        
         var highestAqi = Math.Max(data.Us_Epa_Index, data.Gb_Defra_Index);
 
         return highestAqi switch
@@ -487,12 +490,12 @@
     <div class="current-weather">
         <div class="location">
             <i class="fas fa-map-marker-alt location-icon"></i>
-            <span class="location-text">@Model.Weather.CityName</span>
+            <span class="location-text">@(Model.Weather?.CityName ?? "Failed to fetch data")</span>
         </div>
 
         <div class="current-temp">
-            <div class="temp-main">@Model.Weather.Current.Temperature°C</div>
-            <div class="feels-like">Feels like @Model.Weather.Current.Feelslike°C</div>
+            <div class="temp-main">@Model.Weather?.Current.Temperature°C</div>
+            <div class="feels-like">Feels like @Model.Weather?.Current.Feelslike°C</div>
         </div>
 
         <div class="weather-details">
@@ -501,7 +504,7 @@
                     <i class="fas fa-cloud cloud-icon"></i>
                     <span>Clouds</span>
                 </div>
-                <span class="detail-value">@Model.Weather.Current.Cloud%</span>
+                <span class="detail-value">@Model?.Weather?.Current.Cloud%</span>
             </div>
 
             <div class="detail-item">
@@ -509,7 +512,7 @@
                     <i class="fas fa-wind wind-icon"></i>
                     <span>Wind</span>
                 </div>
-                <span class="detail-value">@Model.Weather.Current.WindPerMeterSecond.ToString("0.##") m/s @Model.Weather.Current.WindDirection</span>
+                <span class="detail-value">@Model?.Weather?.Current.WindPerMeterSecond.ToString("0.##") m/s @Model?.Weather?.Current.WindDirection</span>
             </div>
 
             <div class="detail-item">
@@ -517,7 +520,7 @@
                     <i class="fas fa-chart-line activity-icon"></i>
                     <span>Gusts</span>
                 </div>
-                <span class="detail-value">@Model.Weather.Current.WindGustPerMeterSecond.ToString("0.##") m/s</span>
+                <span class="detail-value">@Model?.Weather?.Current.WindGustPerMeterSecond.ToString("0.##") m/s</span>
             </div>
 
             <div class="detail-item">
@@ -525,21 +528,21 @@
                     <i class="fas fa-star aurora-icon"></i>
                     <span>Aurora</span>
                 </div>
-                <span class="detail-value">@Model.Weather.Current.AuroraProbability.Value%</span>
+                <span class="detail-value">@Model?.Weather?.Current.AuroraProbability.Value%</span>
             </div>
         </div>
 
         <div class="air-quality-badge">
-            Air Quality: @GetAirQualityStatus(Model.Weather.Current.AirQuality)
+            Air Quality: @GetAirQualityStatus(Model?.Weather?.Current.AirQuality)
         </div>
     </div>
 
     <!-- Middle Column - Forecast -->
     <div class="forecast-section">
-        <h3 class="section-title">@Model.Weather.Forecast.Count-Day Forecast</h3>
+        <h3 class="section-title">@Model?.Weather?.Forecast.Count-Day Forecast</h3>
 
         <div class="forecast-grid">
-            @foreach (var day in Model.Weather.Forecast)
+            @foreach (var day in Model?.Weather?.Forecast ?? Enumerable.Empty<Forecast>())
             {
                 <div class="forecast-card">
                     <div class="forecast-date">@GetDayStatus(day.Date)</div>
@@ -559,7 +562,7 @@
                     <i class="fas fa-sun sunrise-icon"></i>
                     <span>Sunrise</span>
                 </div>
-                <span class="sun-moon-value">@Model.Weather.Forecast[0].Astro.Sunrise</span>
+                <span class="sun-moon-value">@Model?.Weather?.Forecast[0].Astro.Sunrise</span>
             </div>
 
             <div class="sun-moon-item">
@@ -567,7 +570,7 @@
                     <i class="fas fa-sun sunset-icon"></i>
                     <span>Sunset</span>
                 </div>
-                <span class="sun-moon-value">@Model.Weather.Forecast[0].Astro.Sunset</span>
+                <span class="sun-moon-value">@Model?.Weather?.Forecast[0].Astro.Sunset</span>
             </div>
 
             <div class="sun-moon-item">
@@ -575,7 +578,7 @@
                     <i class="fas fa-moon moon-icon"></i>
                     <span>Moonrise</span>
                 </div>
-                <span class="sun-moon-value">@Model.Weather.Forecast[0].Astro.Moonrise</span>
+                <span class="sun-moon-value">@Model?.Weather?.Forecast[0].Astro.Moonrise</span>
             </div>
 
             <div class="sun-moon-item">
@@ -583,12 +586,12 @@
                     <i class="fas fa-moon moon-icon"></i>
                     <span>Moonset</span>
                 </div>
-                <span class="sun-moon-value">@Model.Weather.Forecast[0].Astro.Moonset</span>
+                <span class="sun-moon-value">@Model?.Weather?.Forecast[0].Astro.Moonset</span>
             </div>
 
             <div class="sun-moon-item">
                 <span class="moon-phase-label">Moon phase</span>
-                <span class="sun-moon-value">@Model.Weather.Forecast[0].Astro.Moon_Illumination%</span>
+                <span class="sun-moon-value">@Model?.Weather?.Forecast[0].Astro.Moon_Illumination%</span>
             </div>
         </div>
     </div>
@@ -598,7 +601,7 @@
         <h3 class="section-title">Upcoming Departures</h3>
 
         <div class="transport-list">
-            @foreach (var transport in Model.TimeTable.Take(5))
+            @foreach (var transport in Model?.TimeTable?.Take(5) ?? Enumerable.Empty<TimeTable>())
             {
 
                 var departureTime = DateTime.Parse(transport.DepartureTime);

@@ -18,10 +18,10 @@ public static class ContractExtensions
     /// A <see cref="WeatherInformation"/> object populated with current weather, aurora probability, and forecast information.
     /// </returns>
     public static WeatherInformation ToContract(
-        this WeatherData weather, 
-        string locationName, 
+        this WeatherData? weather, 
+        string? locationName,
         AuroraForecastApiResponse? auroraForecast,
-        List<Models.Forecast> forecasts)
+        List<Models.Forecast>? forecasts)
     {
         return new WeatherInformation
         {
@@ -58,23 +58,23 @@ public static class ContractExtensions
                 },
                 AuroraProbability = new Probability
                 {
-                    Date = auroraForecast.Date,
+                    Date = auroraForecast?.Date ?? DateTime.Now,
                     Calculated = new CalculatedProbability
                     {
-                        Value = auroraForecast.Probability.Calculated.Value,
-                        Colour = auroraForecast.Probability.Calculated.Colour,
-                        Lat = auroraForecast.Probability.Calculated.Lat,
-                        Long = auroraForecast.Probability.Calculated.Long
+                        Value = auroraForecast?.Probability.Calculated.Value ?? 0,
+                        Colour = auroraForecast?.Probability.Calculated.Colour ?? string.Empty,
+                        Lat = auroraForecast?.Probability.Calculated.Lat ?? 0,
+                        Long = auroraForecast?.Probability.Calculated.Long ?? 0
                     },
-                    Colour = auroraForecast.Probability.Colour,
-                    Value = auroraForecast.Probability.Value,
+                    Colour = auroraForecast?.Probability.Colour ?? string.Empty,
+                    Value = auroraForecast?.Probability.Value.ToString() ?? "No data",
                     HighestProbability = new Highest
                     {
-                        Colour = auroraForecast.Probability.Highest.Colour,
-                        Lat = auroraForecast.Probability.Highest.Lat,
-                        Long = auroraForecast.Probability.Highest.Long,
-                        Value = auroraForecast.Probability.Highest.Value,
-                        Date = auroraForecast.Probability.Highest.Date
+                        Colour = auroraForecast?.Probability.Highest.Colour ?? string.Empty,
+                        Lat = auroraForecast?.Probability.Highest.Lat ?? 0,
+                        Long = auroraForecast?.Probability.Highest.Long ?? 0,
+                        Value = auroraForecast?.Probability.Highest.Value ?? 0,
+                        Date = auroraForecast?.Probability.Highest.Date ?? DateTime.Now
                     }
                 }
             },

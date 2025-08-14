@@ -215,6 +215,18 @@ int jpegDrawCallback(JPEGDRAW *pDraw) {
   return 1; // Continue decoding
 }
 
+void clearDisplay() {
+  // Clear both layers of the display
+  Paint_SelectImage(BlackImage);
+  Paint_Clear(WHITE);
+  Paint_SelectImage(RYImage);
+  Paint_Clear(WHITE);
+  
+  // Send clear command to the display
+  EPD_7IN5B_V2_Display(BlackImage, RYImage);
+  Serial.println("Display cleared.");
+}
+
 void setup() {
   Serial.begin(115200);
   Serial.println("E-Ink Display Initialization");
@@ -513,27 +525,36 @@ void fetchAndDisplayImage() {
             Serial.println("Image displayed successfully.");
           } else {
             Serial.println("Failed to open JPEG image");
+            clearDisplay();
           }
         } else {
           Serial.println("Failed to read entire image.");
+          clearDisplay();
         }
         free(buffer);
       } else {
         Serial.println("Failed to allocate buffer!");
+        clearDisplay();
       }
     } else {
       Serial.println("Content length unknown or invalid.");
+      clearDisplay();
     }
   } else if (httpCode == HTTPC_ERROR_CONNECTION_REFUSED) {
     Serial.println("Connection refused - server may be down");
+    clearDisplay();
   } else if (httpCode == HTTPC_ERROR_CONNECTION_LOST) {
     Serial.println("Connection lost during request");
+    clearDisplay();
   } else if (httpCode == HTTPC_ERROR_NO_HTTP_SERVER) {
     Serial.println("No HTTP server found");
+    clearDisplay();
   } else if (httpCode == HTTPC_ERROR_NOT_CONNECTED) {
     Serial.println("Not connected to server");
+    clearDisplay();
   } else {
     Serial.printf("HTTP GET failed, error: %d\n", httpCode);
+    clearDisplay();
   }
   
   http.end();
