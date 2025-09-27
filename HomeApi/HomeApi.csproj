@@ -17,6 +17,7 @@
         <PackageReference Include="RazorLight" Version="2.3.1" />
         <PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
         <PackageReference Include="Scalar.AspNetCore" Version="2.5.6" />
+        <PackageReference Include="Seq.Extensions.Logging" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -28,6 +29,9 @@
 
     <ItemGroup>
         <Content Include="wwwroot\index.cshtml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\.github\workflows\build.yml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
     </ItemGroup>

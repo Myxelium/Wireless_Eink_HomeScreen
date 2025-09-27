@@ -124,6 +124,14 @@ jobs:
               "Microsoft.AspNetCore" = "Warning"
             }
           }
+          Seq = @{
+            ServerUrl = "https://log.azaaxin.com"
+            ApiKey = "KEY"
+            MinimumLevel = "Trace"
+            LevelOverride = @{
+              Microsoft: "Warning"
+            }
+          }
           ApiConfiguration = @{
             EspConfiguration = @{
               InformationBoardImageUrl = "http://server_ip:port/home/default.jpg"
@@ -176,6 +184,14 @@ jobs:
             LogLevel = @{
               Default = "Information"
               "Microsoft.AspNetCore" = "Warning"
+            }
+          }
+          Seq = @{
+            ServerUrl = ${{ vars.SEQ_URL }}
+            ApiKey = ${{ secrets.seq_api_key }}
+            MinimumLevel = "Trace"
+            LevelOverride = @{
+              Microsoft: "Warning"
             }
           }
           ApiConfiguration = @{
