@@ -129,7 +129,7 @@ jobs:
             ApiKey = "KEY"
             MinimumLevel = "Trace"
             LevelOverride = @{
-              Microsoft: "Warning"
+              Microsoft = "Warning"
             }
           }
           ApiConfiguration = @{
@@ -191,7 +191,7 @@ jobs:
             ApiKey = ${{ secrets.seq_api_key }}
             MinimumLevel = "Trace"
             LevelOverride = @{
-              Microsoft: "Warning"
+              Microsoft = "Warning"
             }
           }
           ApiConfiguration = @{
