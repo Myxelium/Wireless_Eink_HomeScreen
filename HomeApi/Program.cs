@@ -1,8 +1,12 @@
 using HomeApi.Registration;
 using Scalar.AspNetCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddLogging(loggingBuilder =>
+{
+    loggingBuilder.AddSeq(builder.Configuration.GetSection("Seq"));
+});
 builder.Services.AddHttpClient();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 builder.Services.AddControllers();
